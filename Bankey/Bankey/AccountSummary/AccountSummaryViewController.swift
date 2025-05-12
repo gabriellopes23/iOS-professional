@@ -106,7 +106,7 @@ extension AccountSummaryViewController: UITableViewDataSource {
         
         return cell
     }
-}
+} 
 
 extension AccountSummaryViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -128,7 +128,7 @@ extension AccountSummaryViewController {
             case .success(let profile):
                 self.profile = profile
             case .failure(let error):
-                print(error.localizedDescription)
+                self.displayError(error)
             }
             group.leave()
         }
@@ -139,7 +139,7 @@ extension AccountSummaryViewController {
             case .success(let accounts):
                 self.accounts = accounts
             case .failure(let error):
-                print(error.localizedDescription)
+                self.displayError(error)
             }
             group.leave()
         }
@@ -156,6 +156,20 @@ extension AccountSummaryViewController {
         }
     }
     
+    private func displayError(_ error: NetworkError) {
+        let title: String
+        let message: String
+        switch error {
+        case .serverError:
+            title = "Server Error"
+            message = "Ensure you are connected to the internet. Please try again."
+        case .decodingError:
+            title = "Decoding Error"
+            message = "We could not process your request. Please try again."
+        }
+        self.showErrorAlert(title: title, message: message)
+    }
+    
     private func configureTableHeaderView(with profile: Profile) {
         let vm = AccountSummaryHeaderView.ViewModel(welcomeMessage: "Good morning,",
                                                     name: profile.firstName,
@@ -167,6 +181,14 @@ extension AccountSummaryViewController {
         accountCellViewModels = accounts.map {
             AccountSummaryCell.ViewModel(accountType: $0.type, accountName: $0.name, balance: $0.amount)
         }
+    }
+    
+    private func showErrorAlert(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        
+        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+        
+        present(alert, animated: true)
     }
 }
 

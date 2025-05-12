@@ -36,7 +36,7 @@ extension AccountSummaryViewController {
                     completion(.failure(.decodingError))
                 }
             }
-        }.resume()
+      }.resume()
     }
 }
 
