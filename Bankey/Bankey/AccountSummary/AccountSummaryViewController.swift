@@ -16,6 +16,16 @@ class AccountSummaryViewController: UIViewController {
     var tableView = UITableView()
     var headerView = AccountSummaryHeaderView(frame: .zero)
     var refreshControl = UIRefreshControl()
+    
+    // Networking
+    var profileManager: ProfileManageable = ProfileManager()
+    
+    // Error Alert
+    lazy var errorAlert: UIAlertController = {
+        let alert = UIAlertController(title: "", message: "", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+        return alert
+    }()
  
     var isLoaded = false
     
@@ -122,8 +132,18 @@ extension AccountSummaryViewController {
         // Testing - random number selection
         let userID = String(Int.random(in: 1..<4))
         
+       
+        fetchProfile(group: group, userID: userID)
+        fetchAccounts(group: group, userID: userID)
+        
+        group.notify(queue: .main) {
+            self.reloadView()
+        }
+    }
+    
+    private func fetchProfile(group: DispatchGroup, userID: String) {
         group.enter()
-        fetchProfile(forUserId: userID) { result in
+        profileManager.fetchProfile(forUserId: userID) { result in
             switch result {
             case .success(let profile):
                 self.profile = profile
@@ -132,7 +152,9 @@ extension AccountSummaryViewController {
             }
             group.leave()
         }
-        
+    }
+    
+    private func fetchAccounts(group: DispatchGroup, userID: String) {
         group.enter()
         fetchAccounts(forUserId: userID) { result in
             switch result {
@@ -143,20 +165,25 @@ extension AccountSummaryViewController {
             }
             group.leave()
         }
+    }
+    
+    private func reloadView() {
+        self.tableView.refreshControl?.endRefreshing()
         
-        group.notify(queue: .main) {
-            self.tableView.refreshControl?.endRefreshing()
-            
-            guard let profile = self.profile else { return }
-            
-            self.isLoaded = true
-            self.configureTableHeaderView(with: profile)
-            self.configureTableCells(with: self.accounts)
-            self.tableView.reloadData()
-        }
+        guard let profile = self.profile else { return }
+        
+        self.isLoaded = true
+        self.configureTableHeaderView(with: profile)
+        self.configureTableCells(with: self.accounts)
+        self.tableView.reloadData()
     }
     
     private func displayError(_ error: NetworkError) {
+        let titleAndMessage = titleAndMessage(for: error)
+        self.showErrorAlert(title: titleAndMessage.0, message: titleAndMessage.1)
+    }
+    
+    private func titleAndMessage(for error: NetworkError) -> (String, String) {
         let title: String
         let message: String
         switch error {
@@ -167,7 +194,7 @@ extension AccountSummaryViewController {
             title = "Decoding Error"
             message = "We could not process your request. Please try again."
         }
-        self.showErrorAlert(title: title, message: message)
+        return (title, message)
     }
     
     private func configureTableHeaderView(with profile: Profile) {
@@ -184,11 +211,10 @@ extension AccountSummaryViewController {
     }
     
     private func showErrorAlert(title: String, message: String) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        errorAlert.title = title
+        errorAlert.message = message
         
-        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
-        
-        present(alert, animated: true)
+        present(errorAlert, animated: true)
     }
 }
 
@@ -209,5 +235,16 @@ extension AccountSummaryViewController {
         profile = nil
         accounts = []
         isLoaded = false
+    }
+}
+
+// MARK: - Unit Testing
+extension AccountSummaryViewController {
+    func titleAndMessageForTesting(for error: NetworkError) -> (String, String) {
+        return titleAndMessage(for: error)
+    }
+    
+    func forceFetchProfile() {
+        fetchProfile(group: DispatchGroup(), userID: "1")
     }
 }
