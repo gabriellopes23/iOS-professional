@@ -7,6 +7,8 @@ class PasswordTextField: UIView {
     let textField = UITextField()
     let placeHolderText: String
     let eyeButton = UIButton(type: .custom)
+    let dividerView = UIView()
+    let errorLabel = UILabel()
     
     init(placeHolderText: String) {
         self.placeHolderText = placeHolderText
@@ -22,7 +24,7 @@ class PasswordTextField: UIView {
     }
     
     override var intrinsicContentSize: CGSize {
-        return CGSize(width: 200, height: 200)
+        return CGSize(width: 200, height: 50)
     }
 }
 
@@ -30,7 +32,6 @@ class PasswordTextField: UIView {
 extension PasswordTextField {
     func style() {
         translatesAutoresizingMaskIntoConstraints = false
-        backgroundColor = .systemOrange
         
         lockImageView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -46,12 +47,27 @@ extension PasswordTextField {
         eyeButton.setImage(UIImage(systemName: "eye.circle"), for: .normal)
         eyeButton.setImage(UIImage(systemName: "eye.slash.circle"), for: .selected)
         eyeButton.addTarget(self, action: #selector(togglePasswordView), for: .touchUpInside)
+        
+        dividerView.translatesAutoresizingMaskIntoConstraints = false
+        dividerView.backgroundColor = .separator
+        
+        errorLabel.translatesAutoresizingMaskIntoConstraints = false
+        errorLabel.textColor = .systemRed
+        errorLabel.font = UIFont.preferredFont(forTextStyle: .footnote)
+        errorLabel.text = "Enter your password and again and again and again and again and again and again and again"
+//        errorLabel.adjustsFontSizeToFitWidth = true
+//        errorLabel.minimumScaleFactor = 0.8
+        errorLabel.numberOfLines = 0
+        errorLabel.lineBreakMode = .byWordWrapping
+        errorLabel.isHidden = false
     }
     
     func layout() {
         addSubview(lockImageView)
         addSubview(textField)
         addSubview(eyeButton)
+        addSubview(dividerView)
+        addSubview(errorLabel)
         
         NSLayoutConstraint.activate([
             // Lock
@@ -66,6 +82,16 @@ extension PasswordTextField {
             eyeButton.centerYAnchor.constraint(equalTo: textField.centerYAnchor),
             eyeButton.leadingAnchor.constraint(equalToSystemSpacingAfter: textField.trailingAnchor, multiplier: 1),
             eyeButton.trailingAnchor.constraint(equalTo: trailingAnchor),
+            
+            // DividerView
+            dividerView.topAnchor.constraint(equalToSystemSpacingBelow: textField.bottomAnchor, multiplier: 1),
+            dividerView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            dividerView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            dividerView.heightAnchor.constraint(equalToConstant: 1),
+            
+            errorLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
+            errorLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
+            errorLabel.topAnchor.constraint(equalTo: dividerView.bottomAnchor, constant: 4)
         ])
         
         // CHCR (Resistência à compressão que abraça o conteúdo)
