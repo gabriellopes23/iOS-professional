@@ -7,7 +7,7 @@ class PasswordCriterialView: UIView {
     let imageView = UIImageView()
     let label = UILabel()
     
-    let checkmarkImage = UIImage(systemName: "chackmark.circle")?.withTintColor(.systemGreen, renderingMode: .alwaysOriginal)
+    let checkmarkImage = UIImage(systemName: "checkmark.circle")?.withTintColor(.systemGreen, renderingMode: .alwaysOriginal)
     let xmarkImage = UIImage(systemName: "xmark.circle")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal)
     let circleImage = UIImage(systemName: "circle")?.withTintColor(.tertiaryLabel, renderingMode: .alwaysOriginal)
     
@@ -88,3 +88,4 @@ extension PasswordCriterialView {
         label.setContentHuggingPriority(.defaultLow, for: .horizontal)
     }
 }
+
