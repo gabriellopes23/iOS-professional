@@ -12,7 +12,7 @@ class PasswordStatusView: UIView {
     let digitCriterialView = PasswordCriterialView(text: "digit (0-9)")
     let specialCharacterCriterialView = PasswordCriterialView(text: "special character (e.g. !@#$%ˆ)")
     
-    private var shouldResetCriteria: Bool = true
+    var shouldResetCriteria: Bool = true
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -105,7 +105,38 @@ extension PasswordStatusView {
             lowercaseMet ? lowerCaseCriterialView.isCriterialMet = true : lowerCaseCriterialView.reset()
             digitMet ? digitCriterialView.isCriterialMet = true : digitCriterialView.reset()
             specialCharacterMet ? specialCharacterCriterialView.isCriterialMet = true : specialCharacterCriterialView.reset()
+        } else {
+            lengthCriteriaView.isCriterialMet = lengthAndNoSpaceMet
+            uppercaseCriterialView.isCriterialMet = uppercaseMet
+            lowerCaseCriterialView.isCriterialMet = lowercaseMet
+            digitCriterialView.isCriterialMet = digitMet
+            specialCharacterCriterialView.isCriterialMet = specialCharacterMet
         }
+    }
+    
+    func validate(_ text: String) -> Bool {
+        let uppercaseMet = PasswordCriteria.uppercaseMet(text)
+        let lowercaseMet = PasswordCriteria.lowercaseMet(text)
+        let digitMet = PasswordCriteria.digitMet(text)
+        let specialCharacterMet = PasswordCriteria.specialCharacterMet(text)
+        
+        let checkable = [uppercaseMet, lowercaseMet, digitMet, specialCharacterMet]
+        let metCriteria = checkable.filter { $0 }
+        let lengthAndNoSpaceMet = PasswordCriteria.lengthAndNoSpaceMet(text)
+        
+        if lengthAndNoSpaceMet && metCriteria.count >= 3 {
+            return true
+        }
+        
+        return false
+    }
+    
+    func reset() {
+        lengthCriteriaView.reset()
+        uppercaseCriterialView.reset()
+        lowerCaseCriterialView.reset()
+        digitCriterialView.reset()
+        specialCharacterCriterialView.reset()
     }
 }
 
