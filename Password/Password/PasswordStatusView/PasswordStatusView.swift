@@ -6,11 +6,11 @@ class PasswordStatusView: UIView {
     let stackView = UIStackView()
     let criteriaLabel = UILabel()
     
-    let lengthCriteriaView = PasswordCriterialView(text: "8-32 characters (no spaces)")
-    let uppercaseCriterialView = PasswordCriterialView(text: "uppercase letter (A-Z)")
-    let lowerCaseCriterialView = PasswordCriterialView(text: "lowercase (a-z)")
-    let digitCriterialView = PasswordCriterialView(text: "digit (0-9)")
-    let specialCharacterCriterialView = PasswordCriterialView(text: "special character (e.g. !@#$%ˆ)")
+    let lengthCriteriaView = PasswordCriteriaView(text: "8-32 characters (no spaces)")
+    let uppercaseCriterialView = PasswordCriteriaView(text: "uppercase letter (A-Z)")
+    let lowerCaseCriterialView = PasswordCriteriaView(text: "lowercase (a-z)")
+    let digitCriterialView = PasswordCriteriaView(text: "digit (0-9)")
+    let specialCharacterCriterialView = PasswordCriteriaView(text: "special character (e.g. !@#$%ˆ)")
     
     var shouldResetCriteria: Bool = true
     
@@ -100,17 +100,17 @@ extension PasswordStatusView {
         
         if shouldResetCriteria {
             // Inline validation (
-            lengthAndNoSpaceMet ? lengthCriteriaView.isCriterialMet = true : lengthCriteriaView.reset()
-            uppercaseMet ? uppercaseCriterialView.isCriterialMet = true : uppercaseCriterialView.reset()
-            lowercaseMet ? lowerCaseCriterialView.isCriterialMet = true : lowerCaseCriterialView.reset()
-            digitMet ? digitCriterialView.isCriterialMet = true : digitCriterialView.reset()
-            specialCharacterMet ? specialCharacterCriterialView.isCriterialMet = true : specialCharacterCriterialView.reset()
+            lengthAndNoSpaceMet ? lengthCriteriaView.isCriteriaMet = true : lengthCriteriaView.reset()
+            uppercaseMet ? uppercaseCriterialView.isCriteriaMet = true : uppercaseCriterialView.reset()
+            lowercaseMet ? lowerCaseCriterialView.isCriteriaMet = true : lowerCaseCriterialView.reset()
+            digitMet ? digitCriterialView.isCriteriaMet = true : digitCriterialView.reset()
+            specialCharacterMet ? specialCharacterCriterialView.isCriteriaMet = true : specialCharacterCriterialView.reset()
         } else {
-            lengthCriteriaView.isCriterialMet = lengthAndNoSpaceMet
-            uppercaseCriterialView.isCriterialMet = uppercaseMet
-            lowerCaseCriterialView.isCriterialMet = lowercaseMet
-            digitCriterialView.isCriterialMet = digitMet
-            specialCharacterCriterialView.isCriterialMet = specialCharacterMet
+            lengthCriteriaView.isCriteriaMet = lengthAndNoSpaceMet
+            uppercaseCriterialView.isCriteriaMet = uppercaseMet
+            lowerCaseCriterialView.isCriteriaMet = lowercaseMet
+            digitCriterialView.isCriteriaMet = digitMet
+            specialCharacterCriterialView.isCriteriaMet = specialCharacterMet
         }
     }
     
@@ -140,3 +140,17 @@ extension PasswordStatusView {
     }
 }
 
+// MARK: - Tests
+extension PasswordCriteriaView {
+    var isCheckMarkImage: Bool {
+        return imageView.image == checkmarkImage
+    }
+    
+    var isXmarkImage: Bool {
+        return imageView.image == xmarkImage
+    }
+    
+    var isResetImage: Bool {
+        return imageView.image == circleImage
+    }
+}

@@ -1,7 +1,7 @@
 
 import UIKit
 
-class PasswordCriterialView: UIView {
+class PasswordCriteriaView: UIView {
     
     let stackView = UIStackView()
     let imageView = UIImageView()
@@ -11,9 +11,9 @@ class PasswordCriterialView: UIView {
     let xmarkImage = UIImage(systemName: "xmark.circle")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal)
     let circleImage = UIImage(systemName: "circle")?.withTintColor(.tertiaryLabel, renderingMode: .alwaysOriginal)
     
-    var isCriterialMet: Bool = false {
+    var isCriteriaMet: Bool = false {
         didSet {
-            if isCriterialMet {
+            if isCriteriaMet {
                 imageView.image = checkmarkImage
             } else {
                 imageView.image = xmarkImage
@@ -22,7 +22,7 @@ class PasswordCriterialView: UIView {
     }
     
     func reset() {
-        isCriterialMet = false
+        isCriteriaMet = false
         imageView.image = circleImage
     }
     
@@ -45,7 +45,7 @@ class PasswordCriterialView: UIView {
 }
 
 // MARK: - Extensions
-extension PasswordCriterialView {
+extension PasswordCriteriaView {
     func style() {
         translatesAutoresizingMaskIntoConstraints = false
      
